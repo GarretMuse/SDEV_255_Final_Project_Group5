@@ -1,7 +1,5 @@
 
 class Inventory:
-    instock = 0
-    sold = 0
    
     total_sold = float(input("Enter Items Sold Today: "))
     total_instock = float(input("Enter Instock Items: "))
@@ -13,18 +11,20 @@ class Inventory:
         self.price = price
 
 
-        Inventory.instock +=1
+        Inventory.total_sold += .0
 
 
     def Total_Inventory(self):
-        return '{} {}'.format(self.name, self.instock)
+        self.inventory = int(self.total_sold - self.total_instock)
+        return '{} {}'.format(self.name, self.inventory)
     
 
     def Total_Items_Sold(self):
-        self.sold = int(self.sold - self.Total_Inventory)
+        self.sold = int(self.total_sold - self.total_instock)
     
     def New_Inventory(self):
-        self.instock = int(self.instock - self.sold)
+        self.instock = int(self.total_instock - self.total_sold)
+
 
 
 item1 = Inventory("Couch", "inventory", "price")
