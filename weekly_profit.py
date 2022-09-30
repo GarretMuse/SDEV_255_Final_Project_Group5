@@ -2,8 +2,9 @@
 from inventory import Inventory
 
 class Profit(Inventory):
-    total_price = float(input("enter Price of item:"))
-    total_sold = float(input("Enter Amount Sold:"))
+    total_price = float(input("Final Sale Price: "))
+
+    total_sold = float(input("Total Items Sold: "))
 
 
     def __init__(self, name, profit):
@@ -16,7 +17,14 @@ class Profit(Inventory):
 
     def Weekly_Profit(self):
         self.profit = (self.total_price * self.total_sold)
-        return '{} {}'.format(self.name, self.profit)
+        if self.profit >= 1:
+            return '{} {}'.format(self.name, self.profit)
+        elif self.profit <=1:
+            return self.profit
+        else:
+            quit()
+
+        
 
     
 
@@ -28,3 +36,4 @@ week2 = Profit("Second week", "profit")
 
 
 print(Profit.Weekly_Profit(week1))
+
