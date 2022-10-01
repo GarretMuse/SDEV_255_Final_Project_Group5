@@ -21,16 +21,16 @@ def customer():
   label = tk.Label(master = window, text = "New Customer", font = ("Arial", 16), bg = "lightsteelblue")
   label.grid(column = 2, row = 0)
 
-  btn_close = tk.Button(
+  btn_cancel = tk.Button(
     window,
-    text = "Close",
+    text = "Cancel",
     command = window.destroy
   )
-  btn_close.grid(column = 3, row = 5)
+  btn_cancel.grid(column = 3, row = 5)
 
   btn_commit = tk.Button(
     window,
-    text = "Close",
+    text = "Accept",
     command = window.destroy
   )
   btn_commit.grid(column = 1, row = 5)
