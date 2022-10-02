@@ -1,5 +1,5 @@
-import tkinter as tk
-from newwindow import *
+from customer import *
+from furniture import *  
 
 menu = tk.Tk()
 menu.title("Furniture Delivery Inc")
@@ -14,19 +14,25 @@ for column in range(5):
 for row in range(6):
     menu.rowconfigure(row, weight = 1)
 
+#these frames are just to help me see the layout and this section will be deleted
+#for col in range(5):
+ #   for r in range(6):
+  #    frame = tk.Frame(bg = "red")
+   #   frame.grid(column =col, row = r, sticky = "nsew", padx = 1, pady = 1)
 
-label = tk.Label(text = "Main Menu", font = ("Arial", 18), bg = "lightsteelblue")
-label.grid(column = 2, row = 0)
+title = newLabel(menu, "Main Menu", 16)
+title.grid(column = 2, row = 0)
 
 btn_customer = tk.Button(
-    text = "New Customer",
-    command = customer
+    text = "Customer",
+    command = cust_screen
 )
 btn_customer.grid(column = 2, row = 1)
 
-btn_delivery = tk.Button(
-    text="New Delivery"
+btn_furniture = tk.Button(
+    text="Furniture",
+    command = furn_screen
 )
-btn_delivery.grid(column = 2, row = 2)
+btn_furniture.grid(column = 2, row = 2)
 
 tk.mainloop()
