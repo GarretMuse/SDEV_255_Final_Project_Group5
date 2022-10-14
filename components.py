@@ -11,7 +11,6 @@ def newWindow(name):
   width = 700
   height = 500
   window.geometry("%dx%d" % (width, height))
-  window.attributes('-topmost', True)
 
   for column in range(5):
     window.columnconfigure(column, weight = 1)

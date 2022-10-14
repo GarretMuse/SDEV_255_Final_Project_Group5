@@ -1,5 +1,8 @@
 from customer import *
-from furniture import *  
+from furniture import *
+from database import *
+
+db = Database("furniture.db")
 
 menu = tk.Tk()
 menu.title("Furniture Delivery Inc")
@@ -25,7 +28,7 @@ title.grid(column = 2, row = 0)
 
 btn_customer = tk.Button(
     text = "Customer",
-    command = cust_screen
+    command = lambda: cust_screen(db)
 )
 btn_customer.grid(column = 2, row = 1)
 
