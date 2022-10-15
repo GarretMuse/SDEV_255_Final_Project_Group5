@@ -37,28 +37,15 @@ def cust_screen(db):
   title.grid(column = 2, row = 0,)
 
   labels = ["Customer #: ", "Name: ", "Phone: ", "Address: ", "Distance: "]
+  fields = []
   
   for str in labels:
     label = newLabel(window, str, 12)
     label.grid(column = 0, row = labels.index(str)+1, sticky="e", columnspan=2)
-  
-  ent_num = tk.Entry(window, width = 40)
-  ent_num.grid(column = 2, row = 1, sticky = "w", columnspan=3)
-
-  ent_name = tk.Entry(window, width = 40)
-  ent_name.grid(column = 2, row = 2, sticky = "w", columnspan=3)
-
-  ent_phone = tk.Entry(window, width = 40)
-  ent_phone.grid(column = 2, row = 3, sticky = "w", columnspan=3)
-
-  ent_addr = tk.Entry(window, width = 40)
-  ent_addr.grid(column = 2, row = 4, sticky = "w", columnspan=3)
-
-  ent_dist = tk.Entry(window, width = 40)
-  ent_dist.grid(column = 2, row = 5, sticky = "w", columnspan=3)
-
-  fields = (ent_num, ent_name, ent_phone, ent_addr, ent_dist)
-
+    entry = tk.Entry(window, width = 40)
+    fields.append(entry)
+    entry.grid(column = 2, row = labels.index(str)+1, sticky="w", columnspan=3)
+    
   btn_add = tk.Button(
     window,
     text = "Add",
