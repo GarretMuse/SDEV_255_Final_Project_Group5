@@ -4,6 +4,14 @@ def newLabel(window, str, size):
   label = tk.Label(window, text = str, font = ("Arial", size), bg = "lightsteelblue")
   return label
 
+def newButton(window, str):
+  button = tk.Button(
+    window,
+    width = 10,
+    text = str,    
+  )
+  return button
+  
 def newWindow(name):
   window = tk.Toplevel()
   window.title(name)

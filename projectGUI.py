@@ -50,7 +50,7 @@ btn_order.grid(column = 2, row = 3)
 
 btn_store = tk.Button(
     width = 10,
-    text="Store",
+    text="Manager",
     #command = lambda: st_screen(db)
 )
 btn_store.grid(column = 2, row = 4)

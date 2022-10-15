@@ -46,42 +46,22 @@ def furn_screen(db):
   
   for str in labels:
     label = newLabel(window, str, 12)
-    label.grid(column = 0, row = labels.index(str)+1, sticky="e", columnspan=2)
+    label.grid(column = 1, row = labels.index(str)+1)
     entry = tk.Entry(window, width = 40)
     fields.append(entry)
     entry.grid(column = 2, row = labels.index(str)+1, sticky="w", columnspan=3)
 
-  btn_update = tk.Button(
-    window,
-    text = "Update",
-    command = lambda: modify(db, fields)
-  )
-  btn_update.grid(column = 3, row = 4)
+  btn_names = ["Search", "Add", "Delete", "Update", "Clear", "Cancel"]
+  buttons = []
 
-  btn_stock = tk.Button(
-    window,
-    text = "Add",
-    command = lambda: create_new(db, fields)
-  )
-  btn_stock.grid(column = 1, row = 6, sticky = "w")
+  for str in btn_names:
+    button = newButton(window, str)
+    button.grid(column = 0, row = btn_names.index(str)+1, sticky = "n")
+    buttons.append(button)
 
-  btn_add = tk.Button(
-    window,
-    text = "Delete",
-    command = lambda: delete(db, fields)
-  )
-  btn_add.grid(column = 2, row = 6, sticky="w")
-  
-  btn_lookup = tk.Button(
-    window,
-    text = "Look Up",
-    command = lambda: look_up(db, fields)
-  )
-  btn_lookup.grid(column = 2, row = 6, sticky="e")
-
-  btn_cancel = tk.Button(
-    window,
-    text = "Clear",
-    command = lambda: clear(fields)
-  )
-  btn_cancel.grid(column = 3, row = 6, sticky="e")
+  buttons[0].configure(command = lambda: look_up(db, fields))  
+  buttons[1].configure(command = lambda: create_new(db, fields))
+  buttons[2].configure(command = lambda: delete(db, fields))
+  buttons[3].configure(command = lambda: modify(db, fields))
+  buttons[4].configure(command = lambda: clear(fields))
+  buttons[5].configure(command = window.destroy)

@@ -34,8 +34,12 @@ class Database:
         self.conn.commit()
 
     def update(self, data):
-        self.cur.execute("UPDATE Furniture SET furn_desc = ?, furn_price = ?, furn_stock = ?WHERE furn_id = ?",
-                        (data.desc, data.price, data.stock, data.id))
+        if isinstance(data, cust.Customer):
+            self.cur.execute("UPDATE Customers SET cust_name = ?, cust_phone = ?, cust_addr = ?, cust_dist = ? WHERE cust_id = ?",
+                (data.name, data.phone, data.addr, data.dist, data.id))                
+        if isinstance(data, furn.Furniture):
+            self.cur.execute("UPDATE Furniture SET furn_desc = ?, furn_price = ?, furn_stock = ? WHERE furn_id = ?",
+                (data.desc, data.price, data.stock, data.id))                
         self.conn.commit()
 
     def delete(self):
