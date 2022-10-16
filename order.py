@@ -1,9 +1,6 @@
 import UIcomponents as comp
 import tkinter as tk
-import furniture
-import customer
-
-del_ppm = 2.99
+import furniture, customer
 
 class Order:
   id = 0
@@ -11,15 +8,15 @@ class Order:
   furn_set = {}
   subtotal = 0
 
-  def __init__(self, customer):
+  def __init__(self, customer, store):
     self.customer = customer
-    self.del_fee = float(customer.dist) * del_ppm
+    self.del_fee = float(customer.dist) * store.del_ppm
 
-def cust_search(db, id, labels, order):
+def cust_search(db, id, labels, order, store):
   data = db.fetch("Customers", id, "")
   order.customer = customer.Customer(data[0][1], data[0][2], data[0][3], data[0][4])
   order.customer.id = data[0][0]
-  order.del_fee = order.customer.dist * del_ppm
+  order.del_fee = order.customer.dist * store.del_ppm
 
   labels[0].config(text=order.customer.name)
   labels[1].config(text=order.customer.phone)
@@ -44,14 +41,13 @@ def furn_search(db, id, labels, order):
   else:
     labels[5].config(text="In Stock: " + str(order.furn.stock))
 
-def ord_search(db, id, fields, labels, txtbox, order):
+def ord_search(db, id, fields, labels, txtbox, order, store):
   clear(labels, fields, txtbox, order)
   data = db.fetch("Orders", id, "")
-  cust_search(db, data[0][2], labels, order)
+  cust_search(db, data[0][2], labels, order, store)
   for row in data:
     furn_search(db, row[1], labels, order)
     add_item(order, txtbox)
-
 
 def add_item(order, txtbox):
   if order.furn in order.furn_set:
@@ -85,11 +81,10 @@ def display(order, txtbox):
   txtbox.insert(tk.END, "Delivery: \t\t%.2f\n " % order.del_fee)
   txtbox.insert(tk.END, "Total:\t\t%.2f\n" % (order.subtotal + order.del_fee))
 
-def submit(db, order):
+def submit(db, order, store):
   order.id = db.next_id()
   db.insert(order)
-  print(str(order.subtotal + order.del_fee) + "to daily income")
-  
+  store.daily_inc += (order.subtotal + order.del_fee)
 
 def clear(labels, fields, txtbox, order):
   for label in labels:
@@ -102,10 +97,10 @@ def clear(labels, fields, txtbox, order):
   order.furn_set = {}
   order.subtotal = 0
 
-def ord_screen(db):
+def ord_screen(db, store):
   window = comp.newWindow("Order Options")
 
-  ord_in_prog = Order(customer.Customer("","","", 0))
+  ord_in_prog = Order(customer.Customer("","","", 0), store)
 
   title = comp.newLabel(window, "Orders", 16)
   title.grid(column=2, row=0,)
@@ -130,7 +125,7 @@ def ord_screen(db):
   
   btn_cust = comp.newButton(window, "Customer Search")
   btn_cust.grid(column=0, row=1, columnspan=2, sticky="S")
-  btn_cust.configure(command=lambda: cust_search(db, int(ent_cust.get()), labels, ord_in_prog))    
+  btn_cust.configure(command=lambda: cust_search(db, int(ent_cust.get()), labels, ord_in_prog, store))    
 
   lbl_furn = comp.newLabel(window, "Item #: ", 10)
   lbl_furn.grid(column=0, row=2, sticky="E", padx=10)
@@ -158,7 +153,7 @@ def ord_screen(db):
   ent_ord.grid(column=4, row=1, sticky="W", padx=10)
   fields.append(ent_ord)
   btn_ord = comp.newButton(window, "Order Search")
-  btn_ord.config(command=lambda: ord_search(db, int(ent_ord.get()), fields, labels, ord_text, ord_in_prog))
+  btn_ord.config(command=lambda: ord_search(db, int(ent_ord.get()), fields, labels, ord_text, ord_in_prog, store))
   btn_ord.grid(column=3, row=1, columnspan=2, sticky="S")
 
   ord_text = tk.Text(window, width = 1, height = 1)
@@ -174,7 +169,7 @@ def ord_screen(db):
 
   btn_submit = comp.newButton(window, "Submit Order")
   btn_submit.grid(column=3, row=6, columnspan=2)
-  btn_submit.config(command=lambda: submit(db, ord_in_prog))
+  btn_submit.config(command=lambda: submit(db, ord_in_prog, store))
 
   btn_cancel = comp.newButton(window, "Cancel")
   btn_cancel.grid(column=0, row=6, columnspan=2)

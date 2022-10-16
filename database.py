@@ -1,7 +1,4 @@
-import sqlite3
-import customer 
-import furniture
-import order
+import sqlite3, customer, furniture, order
 
 class Database:
     def __init__(self, db):
