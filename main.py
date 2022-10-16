@@ -1,9 +1,13 @@
 import tkinter as tk
 import UIcomponents as comp
-import database
-import customer
-import furniture
-import order
+import database, customer, furniture, order, manager, csv
+
+with open("store.csv","r") as file:
+    data = csv.reader(file)
+    for line in data:
+        store_info = line
+    store = manager.Store(float(store_info[0]), float(store_info[1]), float(store_info[2]))
+
 
 db = database.Database("furniture.db")
 
@@ -40,14 +44,14 @@ btn_furniture.grid(column = 2, row = 2)
 btn_order = tk.Button(
     width = 10,
     text="Orders",
-    command = lambda: order.ord_screen(db)
+    command = lambda: order.ord_screen(db, store)
 )
 btn_order.grid(column = 2, row = 3)
 
 btn_store = tk.Button(
     width = 10,
     text="Manager",
-    #command = lambda: st_screen(db)
+    command = lambda: manager.mgr_screen(store)
 )
 btn_store.grid(column = 2, row = 4)
 
