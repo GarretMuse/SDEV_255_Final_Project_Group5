@@ -4,6 +4,14 @@ def newLabel(window, str, size):
   label = tk.Label(window, text = str, font = ("Arial", size), bg = "lightsteelblue")
   return label
 
+def newButton(window, str):
+  button = tk.Button(
+    window,
+    width = 12,
+    text = str,    
+  )
+  return button
+  
 def newWindow(name):
   window = tk.Toplevel()
   window.title(name)
@@ -17,10 +25,4 @@ def newWindow(name):
   for row in range(7):
     window.rowconfigure(row, weight = 1)
     
-    #these frames are just to help me see the layout and this section will be deleted
-    #for col in range(5):
-     # for r in range(7):
-      # frame = tk.Frame(window, bg = "red")
-       #frame.grid(column =col, row = r, sticky = "nsew", padx = 1, pady = 1)
-
   return window
