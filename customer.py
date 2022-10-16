@@ -1,7 +1,6 @@
-from turtle import update
-from database import *
-from components import *
-   
+import UIcomponents as comp
+import tkinter as tk
+
 
 class Customer:
   id = 0 
@@ -25,7 +24,7 @@ def look_up(db, fields):
   data = db.fetch("Customers", fields[0].get(), fields[2].get())
   clear(fields)
   for i in range(len(fields)):
-    fields[i].insert(0, data[i])
+    fields[i].insert(0, data[0][i])    
   
 def clear(fields):
   for field in fields:
@@ -37,16 +36,16 @@ def modify(db, fields):
   db.update(cust)
 
 def cust_screen(db):
-  window = newWindow("Customer Options")
+  window = comp.newWindow("Customer Options")
   
-  title = newLabel(window, "Customer", 16)
+  title = comp.newLabel(window, "Customer", 16)
   title.grid(column = 2, row = 0,)
 
   labels = ["Customer #: ", "Name: ", "Phone: ", "Address: ", "Distance: "]
   fields = []
   
   for str in labels:
-    label = newLabel(window, str, 12)
+    label = comp.newLabel(window, str, 12)
     label.grid(column = 1, row = labels.index(str)+1)
     entry = tk.Entry(window, width = 40)
     fields.append(entry)
@@ -56,7 +55,7 @@ def cust_screen(db):
   buttons = []
 
   for str in btn_names:
-    button = newButton(window, str)
+    button = comp.newButton(window, str)
     button.grid(column = 0, row = btn_names.index(str)+1, sticky = "n")
     buttons.append(button)
   
