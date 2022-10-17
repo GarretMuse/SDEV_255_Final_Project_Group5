@@ -1,3 +1,4 @@
+#this file contains UI components so they can easily be created the same way each time
 import tkinter as tk
 
 def newLabel(window, str, size):

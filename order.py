@@ -1,3 +1,4 @@
+#this file contains class and functions for the Orders as well as code for the Order screen
 import UIcomponents as comp
 import tkinter as tk
 import furniture, customer
@@ -12,28 +13,34 @@ class Order:
     self.customer = customer
     self.del_fee = float(customer.dist) * store.del_ppm
 
+#function looks up a customer and adds it to the order in progress
 def cust_search(db, id, labels, order, store):
   data = db.fetch("Customers", id, "")
   order.customer = customer.Customer(data[0][1], data[0][2], data[0][3], data[0][4])
   order.customer.id = data[0][0]
   order.del_fee = order.customer.dist * store.del_ppm
 
+#labels display active customer information
   labels[0].config(text=order.customer.name)
   labels[1].config(text=order.customer.phone)
   labels[2].config(text=order.customer.addr)
 
+#looks up furniture information and makes it the active furniture item for the order
 def furn_search(db, id, labels, order):
+  #checks to see if this furniture is already part of the order and makes it active if so
   newitem = True
   for item in order.furn_set:
     if id == item.id:
       newitem = False
       order.furn = item
   
+  #if it isn't then it creates a new furniture object using db info
   if newitem:
     data = db.fetch("Furniture", id, "")
     order.furn = furniture.Furniture(data[0][1], data[0][2], data[0][3])
     order.furn.id = data[0][0]
   
+#labels display active furniture info
   labels[3].config(text=order.furn.desc)
   labels[4].config(text=order.furn.price)
   if str(order.furn.stock) == "0":
@@ -41,24 +48,28 @@ def furn_search(db, id, labels, order):
   else:
     labels[5].config(text="In Stock: " + str(order.furn.stock))
 
+#searches for and loads saved order information from db
 def ord_search(db, id, fields, labels, txtbox, order, store):
   clear(labels, fields, txtbox, order)
-  data = db.fetch("Orders", id, "")
-  cust_search(db, data[0][2], labels, order, store)
+  data = db.fetch("Orders", id, "") #loads order info from db
+  cust_search(db, data[0][2], labels, order, store) #loads customer info from order
   for row in data:
-    furn_search(db, row[1], labels, order)
+    furn_search(db, row[1], labels, order) #loads each item from the order and adds it
     add_item(order, txtbox)
 
+#adds active furniture information to pending order
 def add_item(order, txtbox):
+  #first checks to see if that furniture is already part of the order
   if order.furn in order.furn_set:
-    order.furn_set[order.furn] += 1
+    order.furn_set[order.furn] += 1 #increases the quantity if so
   else:
-     order.furn_set[order.furn] = 1
+     order.furn_set[order.furn] = 1 #if not, adds it to the dict and sets qty to 1
 
+  #adds furn price to order total and displays order
   order.subtotal +=order.furn.price
-
   display(order, txtbox)
 
+#similar to above function, but removes active furn item from order
 def rem_item(order,txtbox):
   if order.furn in order.furn_set:
     order.subtotal -= order.furn.price
@@ -70,6 +81,7 @@ def rem_item(order,txtbox):
   
   display(order, txtbox)
 
+#displays current order in text box along with total price
 def display(order, txtbox):
   txtbox.delete("1.0", tk.END)
 
@@ -81,11 +93,13 @@ def display(order, txtbox):
   txtbox.insert(tk.END, "Delivery: \t\t%.2f\n " % order.del_fee)
   txtbox.insert(tk.END, "Total:\t\t%.2f\n" % (order.subtotal + order.del_fee))
 
+#submits order information to db and adds total price to daily income
 def submit(db, order, store):
   order.id = db.next_id()
   db.insert(order)
   store.daily_inc += (order.subtotal + order.del_fee)
-
+  
+#clears out all text fields and resets pending order to empty
 def clear(labels, fields, txtbox, order):
   for label in labels:
     label.config(text="")
@@ -97,9 +111,11 @@ def clear(labels, fields, txtbox, order):
   order.furn_set = {}
   order.subtotal = 0
 
+#creates order screen and associated widgets
 def ord_screen(db, store):
   window = comp.newWindow("Order Options")
 
+  #starts an empty order
   ord_in_prog = Order(customer.Customer("","","", 0), store)
 
   title = comp.newLabel(window, "Orders", 16)
@@ -107,6 +123,7 @@ def ord_screen(db, store):
   labels = []
   fields = []   
   
+  #customer search labels, text fields and button
   lbl_cust = comp.newLabel(window, "Customer #: ", 10)
   lbl_cust.grid(column=0, row=1, sticky="E", padx=10)
   ent_cust = tk.Entry(window, width=10)
@@ -127,6 +144,7 @@ def ord_screen(db, store):
   btn_cust.grid(column=0, row=1, columnspan=2, sticky="S")
   btn_cust.configure(command=lambda: cust_search(db, int(ent_cust.get()), labels, ord_in_prog, store))    
 
+  #furniture search labels, text fields, and button
   lbl_furn = comp.newLabel(window, "Item #: ", 10)
   lbl_furn.grid(column=0, row=2, sticky="E", padx=10)
   ent_furn = tk.Entry(window, width=10)
@@ -147,6 +165,7 @@ def ord_screen(db, store):
   btn_furn.grid(column=0, row=2, columnspan=2, sticky="S")
   btn_furn.configure(command=lambda: furn_search(db, int(ent_furn.get()), labels, ord_in_prog))
 
+  #order search label, field, and button
   lbl_ord = comp.newLabel(window, "Order #: ", 10)
   lbl_ord.grid(column=3, row=1, sticky="E", padx=10)
   ent_ord = tk.Entry(window, width=10)
@@ -156,25 +175,31 @@ def ord_screen(db, store):
   btn_ord.config(command=lambda: ord_search(db, int(ent_ord.get()), fields, labels, ord_text, ord_in_prog, store))
   btn_ord.grid(column=3, row=1, columnspan=2, sticky="S")
 
+  #text box for displaying order
   ord_text = tk.Text(window, width = 1, height = 1)
   ord_text.grid(column=3, row=2, sticky="nsew", columnspan=2, rowspan=4, padx=10, pady=5)
 
+  #button for adding active furniture item to order
   btn_add = comp.newButton(window, "Add Item ->")
   btn_add.config(command=lambda: add_item(ord_in_prog, ord_text))
   btn_add.grid(column=2, row=3)
 
+  #button for removing active furniture item from order
   btn_rem = comp.newButton(window, "<- Remove Item")
   btn_rem.config(command=lambda: rem_item(ord_in_prog, ord_text))
   btn_rem.grid(column=2, row=4)
 
+  #button to submit current order
   btn_submit = comp.newButton(window, "Submit Order")
   btn_submit.grid(column=3, row=6, columnspan=2)
   btn_submit.config(command=lambda: submit(db, ord_in_prog, store))
 
+  #button to cancel out and close window
   btn_cancel = comp.newButton(window, "Cancel")
   btn_cancel.grid(column=0, row=6, columnspan=2)
   btn_cancel.configure(command=window.destroy)
 
+  #button to clear out fields and reset
   btn_clear = comp.newButton(window, "Clear")
   btn_clear.config(command=lambda: clear(labels, fields, ord_text, ord_in_prog))
   btn_clear.grid(column=2, row=6)
